@@ -1,0 +1,20 @@
+{
+  "name": "learning_words",
+  "version": "1.0.0",
+  "description": "Web app used to learn new foreing words",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nf start"
+  },
+  "keywords": [],
+  "author": "olegzhermal <olegzhermal@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^1.2.4",
+    "koa-mongo": "^0.6.0",
+    "koa-router": "^5.4.0",
+    "koa-static": "^2.0.0",
+    "mongodb": "^2.2.9"
+  }
+}
