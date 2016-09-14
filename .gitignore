@@ -5,8 +5,6 @@
 # Mac finder artifacts
 .DS_Store
 
-# default files and folder present in public folder need to be ignored
-/public/
 /node_modules/
 /bower_components/
 

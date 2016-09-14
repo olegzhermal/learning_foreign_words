@@ -1,0 +1,7 @@
+<meta charset="UTF-8" />
+
+<title>Foreign words</title>
+
+<link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="react-bootstrap-table/css/react-bootstrap-table-all.min.css">
+<link rel="stylesheet" href="react-bootstrap-table/css/toastr.css">

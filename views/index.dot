@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    {{#def.head}}
+
+  </head>
+
+  <body>
+
+    {{#def.body}}
+
+    {{#def.scripts}}
+
+  </body>
+
+</html>
