@@ -24,7 +24,9 @@ function onAfterInsertRow(row){
 
 function onAfterDeleteRow(rowKeys){
   console.log("onAfterDeleteRow");
-  console.log(rowKeys);
+  $.post('/deleteData', {keys:rowKeys}, function (result){
+      console.log(result);
+  });
 }
 
 var options = {

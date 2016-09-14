@@ -4,7 +4,7 @@ var app   = require('koa')(),
     mongo  = require('koa-mongo');
 
 var port = process.env.PORT ? process.env.PORT : 8000;
-console.log(process.env.DB);
+
 app
     .use(mongo({
         host: 'localhost',

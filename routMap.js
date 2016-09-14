@@ -32,6 +32,35 @@ router
         });
 
         this.body = yield promiseSavingToDB;
+    })
+    .post('/deleteData', function* (next){
+        var body = yield parseBody(this);
+        var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
+
+        var total = 0;
+        // creating an array of promises for delete operations
+        var promisesToDelete = body.keys.map(function(currentValue){
+            var document = {word:currentValue};
+            return new Promise(function(resolve) {
+                mongo.deleteOne(document, function(err, doc) {
+                    if(!err) {
+                        total++;
+                        resolve();
+                        console.log('deleted: '+document.word);
+                    } else {
+                        console.log('some error occured'+util.inspect(err));
+                        resolve('Произошла ошибка при удалении');
+                    }
+                })
+            })
+        });
+
+        var promiseToDeleteAll = Promise.all(promisesToDelete).then(function() {
+            console.log(total+' document(s) deleted');
+            return total+' document(s) deleted';
+        })
+
+        this.body = yield promiseToDeleteAll;
     });
 
 module.exports = router.middleware();
