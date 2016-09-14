@@ -35,19 +35,20 @@ var options = {
 
 var WordsTable = React.createClass({
     getInitialState: function() {
-        return {};
+        var initial = [];
+        return {'initial':initial};
     },
     componentDidMount: function() {
         this.serverRequest = $.get('/getInitialState', function (result){
-            this.setState(result);
+            this.setState({
+                initial: result
+            });
             }.bind(this));
         },
     render: function() {
-        var dataArray = [];
-        dataArray.push(this.state);
         return (
             <BootstrapTable
-                    data={dataArray}
+                    data={this.state.initial}
                     striped={true}
                     hover={true}
                     pagination={true}

@@ -2,6 +2,7 @@
 
 var router = require('koa-router')(),
     dotJS  = require("dot"),
+    util = require('util'),
     parseBody = require('co-body');
 
 dotJS.templateSettings.strip = false;
@@ -12,12 +13,25 @@ router
         this.body = dot.index();
     })
     .get('/getInitialState', function* (next){
-        this.body = {word:'car', description:'a road vehicle, typically with four wheels, powered by an internal-combustion engine and able to carry a small number of people'};
+        var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
+        var cursor = mongo.find().toArray();
+        this.body = yield cursor;
     })
     .post('/saveData', function* (next){
-        var body = yield parseBody(this);
-        console.log('Saving data' + body);
-        this.body = {result:'data saved'};
+        var query = yield parseBody(this);
+        var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
+
+        var promiseSavingToDB = new Promise(function(resolve) {
+            mongo.insert(query, function(err, doc) {
+              console.log('error: '+util.inspect(err));
+              console.log('document: '+util.inspect(doc));
+              (!err) ?
+              resolve('Data saved succesfully') :
+              resolve('There was some error while saving data to DB');
+          });
+        });
+
+        this.body = yield promiseSavingToDB;
     });
 
 module.exports = router.middleware();
