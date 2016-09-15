@@ -1,0 +1,11 @@
+#screen1, #screen2 { height: 100vh; }
+
+#LearnignView {
+    margin-top: 100px;
+    margin-left: 100px;
+    display: inline-block;
+}
+
+#control {
+    margin-top: 100px;
+}

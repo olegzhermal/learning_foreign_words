@@ -4,4 +4,4 @@
 <script src="babel/browser.min.js"></script>
 <script src="bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="react-bootstrap-table/dist/react-bootstrap-table.min.js"></script>
-<script type="text/babel" src="myapp.js"></script>
+<script src="moment/moment.js"></script>

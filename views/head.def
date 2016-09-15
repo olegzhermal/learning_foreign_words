@@ -5,3 +5,4 @@
 <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="react-bootstrap-table/css/react-bootstrap-table-all.min.css">
 <link rel="stylesheet" href="react-bootstrap-table/css/toastr.css">
+<link rel="stylesheet" href="mystyle.css">

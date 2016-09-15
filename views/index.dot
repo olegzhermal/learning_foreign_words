@@ -13,6 +13,8 @@
 
     {{#def.scripts}}
 
+    {{#def.index}}
+
   </body>
 
 </html>
