@@ -5,14 +5,23 @@ var app   = require('koa')(),
 
 var port = process.env.PORT ? process.env.PORT : 8000;
 
+process.env.ENV === 'development' ?
+    (
+      app.use(mongo())
+    ) :
+    (app.use(mongo({
+      host: 'ds033086.mlab.com',
+      port: 33086,
+      user: 'soshace',
+      pass: 'test',
+      db: 'heroku_h563r00l'
+    })),
+    process.env.db = 'heroku_h563r00l',
+    process.env.collection = 'user_words'
+    )
+
 app
-    .use(mongo({
-        host: 'localhost',
-        port: 27017,
-        user: '',
-        pass: '',
-        db: process.env.DB
-      }))
+
     .use(mount('/', require('./routMap.js')))
     .use(serve('bower_components'))
     .use(serve('public/js'))
