@@ -10,11 +10,30 @@ dotJS.templateSettings.strip = false;
 var dot = dotJS.process({path: "./views"});
 
 router
-    .get('/login', function* (next){
-        this.body = dot.login();
-    })
     .get('/', function* (next){
         this.body = dot.index();
+        // this should be done right after authorization 1 time a day:
+        // look what words have dates older than current date
+        // and update them to current date
+        var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
+        mongo.find().toArray().then(function(result){
+            result.forEach(function(doc){
+                if(moment().isAfter(moment(doc.date,'DD-MM-YYYY'), 'day')){
+                    mongo.updateOne(
+                        {'word':doc.word},
+                        {
+                            $set: { "date": moment().format('DD-MM-YYYY') }
+                        }, function(err, results) {
+                            if (!err) {
+                                resolve('Repetition date for '+query.word+' changed to '+newDate);
+                                console.log('Repetition date for '+query.word+' changed to '+newDate);
+                            } else {
+                                res('There was some error while updating data. Try update later');
+                            }
+                        });
+                };
+            })
+        })
     })
     .get('/getInitialState', function* (next){
         var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
