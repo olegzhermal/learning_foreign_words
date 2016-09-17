@@ -16,8 +16,8 @@ process.env.ENV === 'development' ?
       pass: 'test',
       db: 'heroku_h563r00l'
     })),
-    process.env.db = 'heroku_h563r00l',
-    process.env.collection = 'user_words'
+    process.env.DB = 'heroku_h563r00l',
+    process.env.COLLECTION = 'user_words'
     )
 
 app
