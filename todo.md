@@ -9,7 +9,8 @@ _(managed using [todo-md](https://github.com/Hypercubed/todo-md))_
 	- [ ] After date is changed, the changes are not visible immediately in the words list (page reload needed).
 	- [ ] Hotkeys for all the buttons
 - [?] Console warnings
-	- [ ] Check for bugs
+	- [ ] Check for bugs and tests
+		- [ ] A db should contain one instance of same word
 	- [x] Clean unnecessary
 - [ ] CSS
 

@@ -10,26 +10,26 @@ var cellEditProp = {
   blurToSave: true,
   afterSaveCell: function(row, cellName, cellValue){
       $.post('/updateData', row, function (result){
+          console.log(result);
       });
   }
 };
 
 function onAfterTableComplete(){
-  console.log('Table render complete.');
+  // console.log('Table render complete.');
 }
 
 function onAfterInsertRow(row){
-  console.log("Row inserted:");
-  console.log(row);
+  console.log("Word inserted: "+row.word);
   $.post('/saveData', row, function (result){
       console.log(result);
   });
 }
 
 function onAfterDeleteRow(rowKeys){
-  console.log("onAfterDeleteRow");
   $.post('/deleteData', {keys:rowKeys}, function (result){
       console.log(result);
+      console.log(rowKeys);
   });
 }
 
@@ -51,11 +51,43 @@ var StartLearningButton = React.createClass({
   render: function () {
     return (
       <button type="button" className="btn btn-primary btn-block" onClick={this.handleClick}>
-          Hit Enter or click to start checking your knowledge!
+          Hit keyboard "S" button or click here to START checking your vocabulary!
       </button>
     );
   }
 });
+
+var definitionEdit = {
+    type: 'textarea',
+    validator: function(val){
+        if (val.length > 1000){
+            console.log('Error: To long for a word definition. Try to make it 1000 symbols or less');
+            return false;
+        } else if (!/\S/.test(val)) {
+            console.log('Error: I don\'t see any definition! Type it!');
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+
+var dateEdit = {
+    validator: function(val){
+        if (moment(val, 'DD-MM-YYYY').toDate() == 'Invalid Date' || val.length != 10){
+            console.log('Error: Date should be formated as DD-MM-YYYY');
+            return false;
+        } else if (moment(val, 'DD-MM-YYYY').toDate() < moment().subtract(1, 'days')) {
+            console.log('Error: Date should not be older than today');
+            return false;
+        } else if (moment(val, 'DD-MM-YYYY').toDate() > moment().add(100, 'years')) {
+            console.log('Error: Do you want to live 100+ years?! This app won\'t =)');
+            return false;
+        } else {
+            return true;
+        };
+    },
+}
 
 var WordsTable = React.createClass({
     getInitialState: function() {
@@ -86,8 +118,10 @@ var WordsTable = React.createClass({
                         options={options}>
 
                     <TableHeaderColumn dataField="word" width="200px" dataAlign="center" dataSort={true} isKey={true}>A word</TableHeaderColumn>
-                    <TableHeaderColumn dataField="description" dataSort={true}>Description</TableHeaderColumn>
-                    <TableHeaderColumn dataField="date" width="250px" dataAlign="center" dataSort={true}>Date to repete ( DD-MM-YYYY)</TableHeaderColumn>
+                    <TableHeaderColumn dataField="description" dataSort={true} editable={definitionEdit}>Definition</TableHeaderColumn>
+                    <TableHeaderColumn dataField="date" width="220px" dataAlign="center" dataSort={true} editable={dateEdit}>
+                        Repeat at (DD-MM-YYY)
+                    </TableHeaderColumn>
                 </BootstrapTable>
             </div>
         );
@@ -108,12 +142,14 @@ var LearnignView = React.createClass({
         }.bind(this));
     },
     showPrevious: function(){
+        $('#definition').addClass('hidden');
         if (this.state.counter - 1 >= 0) (this.state.counter = this.state.counter - 1 );
         this.serverRequest = $.post('/getWordToRepeat', this.state, function (wordForNow){
                 this.setState(wordForNow);
         }.bind(this));
     },
     showNext: function(){
+        $('#definition').addClass('hidden');
         if (this.state.counter + 1 < this.state.counterMax) (this.state.counter = this.state.counter + 1 );
         this.serverRequest = $.post('/getWordToRepeat', this.state, function (wordForNow){
                 this.setState(wordForNow);
@@ -129,25 +165,36 @@ var LearnignView = React.createClass({
             console.log(result);
         }.bind(this));
     },
+    showDefinition: function(){
+        $('#definition').toggleClass('hidden');
+    },
     render: function(){
-        console.log(this.state);
         return(
             <div id="LearnignView">
-                <h1>{this.state.word}</h1>
-                <div>{this.state.description}</div>
                 <div id='control'>
-                    <button type="button" onClick={this.showPrevious}>
-                        Previous
+                    <div className="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" className="btn btn-primary" onClick={this.showPrevious}>
+                            Previous (J)
+                        </button>
+                        <button type="button" className="btn btn-primary" onClick={this.showNext}>
+                            Next (L)
+                        </button>
+                    </div>
+                    <button type="button" className="btn btn-info" onClick={this.showDefinition}>
+                        Show/hide definition (K)
                     </button>
-                    <button type="button" onClick={this.showNext}>
-                        Next
-                    </button>
-                    <button type="button" onClick={this.repeatTomorrow}>
-                        Repeat tomorrow
-                    </button>
-                    <button type="button" onClick={this.repeatLater}>
-                        Put away for a while
-                    </button>
+                    <div className="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" className="btn btn-success" onClick={this.repeatTomorrow}>
+                            Repeat tomorrow (U)
+                        </button>
+                        <button type="button" className="btn btn-warning" onClick={this.repeatLater}>
+                            Done! Repeat later (M)
+                        </button>
+                    </div>
+                </div>
+                <div id='wordAndDefinition'>
+                    <h1 id="wordToRepeat">{this.state.word}</h1>
+                    <div id='definition' className='hidden'>{this.state.description}</div>
                 </div>
             </div>
         )
@@ -155,6 +202,25 @@ var LearnignView = React.createClass({
 })
 
 var Spa = React.createClass({
+    componentDidMount: function() {
+        var self = this;
+        Mousetrap.bind('l', function() {
+            self.refs['LearnignView'].showNext();
+        });
+        Mousetrap.bind('j', function() {
+            self.refs['LearnignView'].showPrevious();
+        });
+        Mousetrap.bind('m', function() {
+            self.refs['LearnignView'].repeatLater();
+        });
+        Mousetrap.bind('u', function() {
+            self.refs['LearnignView'].repeatTomorrow();
+        });
+        Mousetrap.bind('k', function() {
+            self.refs['LearnignView'].showDefinition();
+        });
+    },
+
     render: function(){
         return (
             <div className='SPA'>
@@ -163,7 +229,7 @@ var Spa = React.createClass({
                     <StartLearningButton />
                 </div>
                 <div id="screen2">
-                    <LearnignView />
+                    <LearnignView ref='LearnignView'/>
                 </div>
             </div>
         );

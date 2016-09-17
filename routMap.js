@@ -24,7 +24,7 @@ router
     .post('/getWordToRepeat', function* (next){
         var body = yield parseBody(this);
         var counter = parseInt(body.counter);
-console.log(counter);
+
         var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
 
         var randomWordNumber = function getRandomInt(min, max) {
@@ -63,26 +63,44 @@ console.log(counter);
         var query = yield parseBody(this);
         var newDate = moment().add(1,'days').format('DD-MM-YYYY');
 
-        mongo.updateOne(
-            query,
-            {
-                $set: { "date": newDate }
-            }, function(err, results) {
-                console.log(results);
-            });
+        var promiseToChangeDate = new Promise (function(resolve){
+            mongo.updateOne(
+                query,
+                {
+                    $set: { "date": newDate }
+                }, function(err, results) {
+                    if (!err) {
+                        resolve('Repetition date for '+query.word+' changed to '+newDate);
+                        console.log('Repetition date for '+query.word+' changed to '+newDate);
+                    } else {
+                        res('There was some error while updating data. Try update later');
+                    }
+                });
+        });
+
+        this.body = yield promiseToChangeDate;
     })
     .post('/repeatLater', function* (next){
         var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
         var query = yield parseBody(this);
         var newDate = moment().add(7,'days').format('DD-MM-YYYY');
 
-        mongo.updateOne(
-            query,
-            {
-                $set: { "date": newDate }
-            }, function(err, results) {
-                console.log(results);
-            });
+        var promiseToChangeDate = new Promise (function(resolve){
+            mongo.updateOne(
+                query,
+                {
+                    $set: { "date": newDate }
+                }, function(err, results) {
+                    if (!err) {
+                        resolve('Repetition date for '+query.word+' changed to '+newDate);
+                        console.log('Repetition date for '+query.word+' changed to '+newDate);
+                    } else {
+                        res('There was some error while updating data. Try update later');
+                    }
+                });
+        });
+
+        this.body = yield promiseToChangeDate;
     })
     .post('/saveData', function* (next){
         var query = yield parseBody(this);
@@ -93,7 +111,7 @@ console.log(counter);
               console.log('error: '+util.inspect(err));
               console.log('document: '+util.inspect(doc));
               (!err) ?
-              resolve('Data saved succesfully') :
+              resolve('Word '+query.word + ' is saved to DB succesfully') :
               resolve('There was some error while saving data to DB');
           });
         });
@@ -116,7 +134,7 @@ console.log(counter);
                         console.log('deleted: '+document.word);
                     } else {
                         console.log('some error occured'+util.inspect(err));
-                        resolve('Произошла ошибка при удалении');
+                        resolve('There was some error while deleting');
                     }
                 })
             })
@@ -124,7 +142,7 @@ console.log(counter);
 
         var promiseToDeleteAll = Promise.all(promisesToDelete).then(function() {
             console.log(total+' document(s) deleted');
-            return total+' document(s) deleted';
+            return total+' word(s) deleted:';
         })
 
         this.body = yield promiseToDeleteAll;
@@ -132,13 +150,20 @@ console.log(counter);
     .post('/updateData', function* (next){
         var words_list = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
         var body = yield parseBody(this);
-        words_list.updateOne(
-            {word: body.word},
-            {
-                $set: { "date": body.date, "description": body.description }
-            }, function(err, results) {
-                console.log(results);
-            });
+        var promiseToUpdate = new Promise (function(res){
+            words_list.updateOne(
+                {word: body.word},
+                {
+                    $set: { "date": body.date, "description": body.description }
+                }, function(err, results) {
+                    if (!err) {
+                        res('Data updated succesfully!');
+                    } else {
+                        res('There was some error while updating data. Try update later');
+                    }
+                });
+        });
+        this.body = yield promiseToUpdate;
     });
 
 module.exports = router.middleware();

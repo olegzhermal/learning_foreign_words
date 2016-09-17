@@ -3,5 +3,8 @@
 <script src="react/react-dom.js"></script>
 <script src="babel/browser.min.js"></script>
 <script src="bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- react-bootstrap-table dependencies on react 0.14.x and Bootstrap 3 written by ES6 -->
 <script src="react-bootstrap-table/dist/react-bootstrap-table.min.js"></script>
 <script src="moment/moment.js"></script>
+<script type="text/javascript" src="mousetrap/mousetrap.js"></script>
+<script type="text/javascript" src="hotKeys.js"></script>

@@ -1,11 +1,24 @@
 #screen1, #screen2 { height: 100vh; }
 
-#LearnignView {
-    margin-top: 100px;
-    margin-left: 100px;
-    display: inline-block;
+#control {
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    width: 62%;
 }
 
-#control {
+#wordAndDefinition {
+    margin: auto;
     margin-top: 100px;
+    width: 62%;
+}
+
+#wordToRepeat {
+    font-size: 10vh;
+    text-align: center;
+}
+
+#definition {
+    font-size: 4vh;
+    margin: auto;
 }

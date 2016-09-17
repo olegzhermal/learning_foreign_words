@@ -2,11 +2,12 @@
   "name": "learning_foreign_words",
   "version": "0.0.0",
   "dependencies": {
-    "react": "^15.3.1",
+    "react": "^0.14.1",
     "babel": "^5.8.38",
     "jquery": "^3.1.0",
     "bootstrap": "^3.3.7",
     "react-bootstrap-table": "^2.0.7",
-    "moment": "^2.15.0"
+    "moment": "^2.15.0",
+    "mousetrap": "^1.6.0"
   }
 }
