@@ -25,10 +25,10 @@ router
                             $set: { "date": moment().format('DD-MM-YYYY') }
                         }, function(err, results) {
                             if (!err) {
-                                resolve('Repetition date for '+query.word+' changed to '+newDate);
-                                console.log('Repetition date for '+query.word+' changed to '+newDate);
+                                resolve('Repetition date for '+doc.word+' changed to '+newDate);
+                                console.log('Repetition date for '+doc.word+' changed to '+moment().format('DD-MM-YYYY'));
                             } else {
-                                res('There was some error while updating data. Try update later');
+                                resolve('There was some error while updating data. Try update later');
                             }
                         });
                 };
