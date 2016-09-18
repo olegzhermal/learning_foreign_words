@@ -13,6 +13,7 @@ router
     .get('/', function* (next){
         this.body = dot.index();
 
+    })
     .get('/getInitialState', function* (next){
         var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
         var cursor = mongo.find().toArray();
