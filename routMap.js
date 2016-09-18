@@ -12,29 +12,7 @@ var dot = dotJS.process({path: "./views"});
 router
     .get('/', function* (next){
         this.body = dot.index();
-        // this should be done right after authorization 1 time a day:
-        // look what words have dates older than current date
-        // and update them to current date
-        var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
-        mongo.find().toArray().then(function(result){
-            result.forEach(function(doc){
-                if(moment().isAfter(moment(doc.date,'DD-MM-YYYY'), 'day')){
-                    mongo.updateOne(
-                        {'word':doc.word},
-                        {
-                            $set: { "date": moment().format('DD-MM-YYYY') }
-                        }, function(err, results) {
-                            if (!err) {
-                                resolve('Repetition date for '+doc.word+' changed to '+newDate);
-                                console.log('Repetition date for '+doc.word+' changed to '+moment().format('DD-MM-YYYY'));
-                            } else {
-                                resolve('There was some error while updating data. Try update later');
-                            }
-                        });
-                };
-            })
-        })
-    })
+
     .get('/getInitialState', function* (next){
         var mongo = this.mongo.db(process.env.DB).collection(process.env.COLLECTION);
         var cursor = mongo.find().toArray();
